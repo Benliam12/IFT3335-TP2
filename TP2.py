@@ -1,4 +1,3 @@
-
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB
@@ -48,18 +47,18 @@ for l in file.readlines():
     else:
         d[0] = tt[1]
 
-    if (interest-1) >= 0:
-        d[1] = sentence[interest-1][0]
-        d[2] = sentence[interest-1][1]
-    if (interest-2) >= 0:
-        d[3] = sentence[interest-2][0]
-        d[4] = sentence[interest-2][1]
-    if (interest+1) < len(sentence):
-        d[5] = sentence[interest+1][0]
-        d[6] = sentence[interest+1][1]
-    if (interest+2) < len(sentence):
-        d[7] = sentence[interest+2][0]
-        d[8] = sentence[interest+2][1]
+    if (interest - 1) >= 0:
+        d[1] = sentence[interest - 1][0]
+        d[2] = sentence[interest - 1][1]
+    if (interest - 2) >= 0:
+        d[3] = sentence[interest - 2][0]
+        d[4] = sentence[interest - 2][1]
+    if (interest + 1) < len(sentence):
+        d[5] = sentence[interest + 1][0]
+        d[6] = sentence[interest + 1][1]
+    if (interest + 2) < len(sentence):
+        d[7] = sentence[interest + 2][0]
+        d[8] = sentence[interest + 2][1]
     data.append(d)
     c1 += 1
 
