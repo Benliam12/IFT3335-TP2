@@ -106,13 +106,13 @@ print("TREE Number of mislabeled points out of a total %d points : %d" %
 
 clf = RandomForestClassifier(n_estimators=150)
 clf = clf.fit(output_corpus, na)
-
 y_pred = clf.predict(X_test)
 print("Forest Number of mislabeled points out of a total %d points : %d" %
       (len(X_test), (y_test != y_pred).sum()))
 
 clf4 = svm.SVC()
 clf4 = clf4.fit(output_corpus, na)
+y_pred = clf4.predict(X_test)
 print("SVM Number of mislabeled points out of a total %d points : %d" %
       (len(X_test), (y_test != y_pred).sum()))
 
