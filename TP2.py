@@ -25,6 +25,7 @@ for l in file.readlines():
 
         tt = t.split("/")
         if len(tt) == 2:
+            # On trouve ou se trouve le mot "interest"
             if "interest" in t and "_" in t:
                 interest = c
             sentence.append(tt)
@@ -33,6 +34,7 @@ for l in file.readlines():
     d = ["@" for _ in range(9)]
     d[0] = sentence[interest][0].split("_")[1]
 
+    # On sauvegarde les 2 mots avant et après
     if (interest-1) >= 0:
         d[1] = sentence[interest-1][0]
         d[2] = sentence[interest-1][1]
@@ -75,6 +77,8 @@ for i, element in enumerate(t):
 
 
 # Test de performance
+
+# Naive Bayes
 X_train, X_test, y_train, y_test = train_test_split(
     output_corpus, na, test_size=0.5, random_state=0)
 gnb = MultinomialNB()
@@ -82,24 +86,28 @@ y_pred = gnb.fit(X_train, y_train).predict(X_test)
 print("Dumb Bayes Number of mislabeled points out of a total %d points : %d" %
       (len(X_test), (y_test != y_pred).sum()))
 
+# Arbre seul
 clf3 = tree.DecisionTreeClassifier()
 clf3 = clf3.fit(output_corpus, na)
 y_pred = clf3.predict(X_test)
 print("TREE Number of mislabeled points out of a total %d points : %d" %
       (len(X_test), (y_test != y_pred).sum()))
 
+# Forêt aléatoire
 clf = RandomForestClassifier(n_estimators=150)
 clf = clf.fit(output_corpus, na)
 y_pred = clf.predict(X_test)
 print("Forest Number of mislabeled points out of a total %d points : %d" %
       (len(X_test), (y_test != y_pred).sum()))
 
+# SVM
 clf4 = svm.SVC()
 clf4 = clf4.fit(output_corpus, na)
 y_pred = clf4.predict(X_test)
 print("SVM Number of mislabeled points out of a total %d points : %d" %
       (len(X_test), (y_test != y_pred).sum()))
 
+# MLP
 clf2 = MLPClassifier(hidden_layer_sizes=(64, 64), random_state=0)
 clf2 = clf2.fit(output_corpus, na)
 y_pred = clf2.predict(X_test)
