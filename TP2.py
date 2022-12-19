@@ -4,7 +4,7 @@
 # VANESSA THIBAULT-SOUCY 20126808
 
 import numpy as np
-import sklearn as sk
+import sklearn
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.naive_bayes import GaussianNB, MultinomialNB
@@ -44,18 +44,18 @@ for l in file.readlines():
     d[0] = sentence[interest][0].split("_")[1]
 
     # On sauvegarde les 2 mots avant et après
-    if (interest-1) >= 0:
-        d[1] = sentence[interest-1][0]
-        d[2] = sentence[interest-1][1]
-    if (interest-2) >= 0:
-        d[3] = sentence[interest-2][0]
-        d[4] = sentence[interest-2][1]
-    if (interest+1) < len(sentence):
-        d[5] = sentence[interest+1][0]
-        d[6] = sentence[interest+1][1]
-    if (interest+2) < len(sentence):
-        d[7] = sentence[interest+2][0]
-        d[8] = sentence[interest+2][1]
+    if (interest - 1) >= 0:
+        d[1] = sentence[interest - 1][0]
+        d[2] = sentence[interest - 1][1]
+    if (interest - 2) >= 0:
+        d[3] = sentence[interest - 2][0]
+        d[4] = sentence[interest - 2][1]
+    if (interest + 1) < len(sentence):
+        d[5] = sentence[interest + 1][0]
+        d[6] = sentence[interest + 1][1]
+    if (interest + 2) < len(sentence):
+        d[7] = sentence[interest + 2][0]
+        d[8] = sentence[interest + 2][1]
     data.append(d)
 
 t = []
@@ -65,20 +65,21 @@ for i in data:
     a.append(i[0])
 
 
-
 def graph(classifier, yTrain, yTest):
-    accuracy = sk.metrics.accuracy(yTrain,yTest)
-    loss = sk.metrics.loss(yTrain,yTest)
-    figNB, (ax0, ax1) = plt.subplots(ncols=2, figsize=(8,2))
+    accuracy = sklearn.metrics.accuracy_score(yTrain, yTest)
+    loss = sklearn.metrics.brier_score_loss(yTrain, yTest)
+    figNB, (ax0, ax1) = plt.subplots(ncols=2, figsize=(8, 2))
     ax0.plot(loss)
-    ax0.set_title(classifier +' loss')
+    ax0.set_title("%s: Coût", classifier)
     ax1.plot(accuracy)
-    ax1.set_title(classifier +' error rate')
+    ax1.set_title("%s: Taux d'erreur", classifier)
     plt.figure()
     plt.show(figNB)
 
+
 def custom(text):
     return text.split(" ")
+
 
 # Traitement des listes en vecteurs
 # inspiration: https://scikit-learn.org/stable/modules/generated/sklearn.feature_extraction.text.CountVectorizer.html#
@@ -90,13 +91,12 @@ na = []
 for i, element in enumerate(t):
     element = tokenizer(element.lower())
     # On s'assure d'avoir le bon format.
-    if(len(element) == 8):
+    if (len(element) == 8):
         output_line = []
         for token in element:
             output_line.append(vectorizer.vocabulary_.get(token))
         output_corpus.append(output_line)
         na.append(a[i])
-
 
 # Entrainement et test de performance des models
 
@@ -104,8 +104,7 @@ for i, element in enumerate(t):
 X_train, X_test, y_train, y_test = train_test_split(
     output_corpus, na, test_size=0.5, random_state=0)
 
-
-# Naive Bayes    
+# Naive Bayes
 bayesNaif = MultinomialNB()
 y_pred = bayesNaif.fit(X_train, y_train).predict(X_test)
 print("Dumb Bayes Number of mislabeled points out of a total %d points : %d" %
