@@ -86,9 +86,11 @@ for i, element in enumerate(t):
 
 # Entrainement et test de performance des models
 
-# Naive Bayes
+# Separation du jeu de données en 2 (train, test)
 X_train, X_test, y_train, y_test = train_test_split(
     output_corpus, na, test_size=0.5, random_state=0)
+
+# Naive Bayes    
 bayesNaif = MultinomialNB()
 y_pred = bayesNaif.fit(X_train, y_train).predict(X_test)
 print("Dumb Bayes Number of mislabeled points out of a total %d points : %d" %
