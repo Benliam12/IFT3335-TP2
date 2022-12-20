@@ -103,11 +103,21 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 # Naive Bayes
 if False:
-    bayesNaif = MultinomialNB()
-    y_pred = bayesNaif.fit(X_train, y_train).predict(X_test)
-    print("Dumb Bayes Number of mislabeled points out of a total %d points : %d" %
-          (len(X_test), (y_test != y_pred).sum()))
-    graph("Bayes Naif", y_test, y_pred)
+    dd = []
+    x = [0.2, 0.5, 0.8]
+    for y in x:
+        avg = []
+        for _ in range(3):
+            X_train, X_test, y_train, y_test = train_test_split(
+                output_corpus, na, test_size=y, random_state=0)
+            bayesNaif = MultinomialNB()
+            y_pred = bayesNaif.fit(X_train, y_train).predict(X_test)
+            t2 = sklearn.metrics.accuracy_score(
+                y_test, y_pred)
+            avg.append(t2)
+        avg2 = sum(avg)/len(avg)
+        print(str(y*100) + "," + str(np.round(avg2, 5)))
+    print(dd)
 
 # Arbre seul
 if True:
@@ -117,63 +127,75 @@ if True:
         avg = []
         for _ in range(5):
             X_train, X_test, y_train, y_test = train_test_split(
-                output_corpus, na, test_size=0.5, random_state=0)
+                output_corpus, na, test_size=0.2, random_state=0)
             arbreDesc = tree.DecisionTreeClassifier(max_depth=x)
             arbreDesc = arbreDesc.fit(X_train, y_train)
             y_pred = arbreDesc.predict(X_test)
             t2 = sklearn.metrics.accuracy_score(
                 y_test, y_pred)
             avg.append(t2)
-        dd.append(sum(avg)/len(avg))
+        avg2 = sum(avg)/len(avg)
+        print(str(np.round(avg2, 5)))
+        dd.append(avg2)
     plt.plot(t, dd)
     plt.ylabel("Précision")
-    plt.xlabel("Estimateurs")
-    plt.title("Arbre seul")
+    plt.xlabel("Profondeur max")
+    plt.title("Arbre de décision 20%")
     plt.show()
 # Forêt aléatoire
 
 if False:
     dd = []
-    t = [5, 25, 50, 75, 100, 125,
-         150, 175, 200, 225, 275, 300, 400, 500, 600, 700, 800, 900, 1000]
+    t = [5, 25, 50, 100, 125,
+         150, 175, 200, 225, 275, 300, 400, 500]
     for x in t:
         avg = []
         for _ in range(5):
             X_train, X_test, y_train, y_test = train_test_split(
-                output_corpus, na, test_size=0.5, random_state=0)
+                output_corpus, na, test_size=0.8, random_state=0)
             foretAl = RandomForestClassifier(n_estimators=x)
             foretAl = foretAl.fit(X_train, y_train)
             y_pred = foretAl.predict(X_test)
             t2 = sklearn.metrics.accuracy_score(
                 y_test, y_pred)
             avg.append(t2)
+        avg2 = sum(avg)/len(avg)
+        print(str(x) + "," + str(np.round(avg2, 5)))
         dd.append(sum(avg)/len(avg))
     plt.plot(t, dd)
     plt.ylabel("Précision")
     plt.xlabel("Estimateurs")
-    plt.title("Forêt aléatoire")
+    plt.title("Forêt aléatoire - 80%")
     plt.show()
 
 
 # SVM
 if False:
-    supportVectMach = svm.SVC()
-    supportVectMach = supportVectMach.fit(X_train, y_train)
-    y_pred = supportVectMach.predict(X_test)
-    print("SVM Number of mislabeled points out of a total %d points : %d" %
-          (len(X_test), (y_test != y_pred).sum()))
-    graph("SVM", y_test, y_pred)
+    x = [0.2, 0.5, 0.8]
+    for y in x:
+        avg = []
+        for _ in range(5):
+            X_train, X_test, y_train, y_test = train_test_split(
+                output_corpus, na, test_size=y, random_state=0)
+            supportVectMach = svm.SVC()
+            supportVectMach = supportVectMach.fit(X_train, y_train)
+            y_pred = supportVectMach.predict(X_test)
+            t2 = sklearn.metrics.accuracy_score(
+                y_test, y_pred)
+            avg.append(t2)
+        avg2 = sum(avg)/len(avg)
+        print(str(np.round(avg2, 5)))
 
 # MLP
 if False:
     dd = []
-    t = [50, 64, 100, 200, 300, 400, 500]
+    t = [50, 64, 78, 86, 95, 98, 100, 102, 105, 120, 150]
 
     for x in t:
         avg = []
-        for _ in range(5):
+        for _ in range(2):
             X_train, X_test, y_train, y_test = train_test_split(
-                output_corpus, na, test_size=0.5, random_state=0)
+                output_corpus, na, test_size=0.8, random_state=0)
             percMultCouche = MLPClassifier(
                 hidden_layer_sizes=(x, x), random_state=0)
             percMultCouche = percMultCouche.fit(X_train, y_train)
@@ -181,9 +203,11 @@ if False:
             t2 = sklearn.metrics.accuracy_score(
                 y_test, y_pred)
             avg.append(t2)
+        avg2 = sum(avg)/len(avg)
+        print(str(x) + "," + str(np.round(avg2, 5)))
         dd.append(sum(avg)/len(avg))
     plt.plot(t, dd)
     plt.ylabel("Précision")
     plt.xlabel("Dimension")
-    plt.title("MPL")
+    plt.title("MPL - 80%")
     plt.show()
