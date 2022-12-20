@@ -14,7 +14,7 @@ from sklearn.neural_network import MLPClassifier
 from sklearn import tree, svm
 import matplotlib.pyplot as plt
 
-# Lecture du data et traitement de chaque anotations. 
+# Lecture du data et traitement de chaque anotations.
 file = open("data.txt", "r")
 data = []
 for l in file.readlines():
@@ -62,19 +62,16 @@ t = []
 a = []
 for i in data:
     t.append(" ".join(i[1:]))
-    a.append(i[0])
+    a.append(""+i[0])
 
 
 def graph(classifier, yTrain, yTest):
-    accuracy = sklearn.metrics.accuracy_score(yTrain, yTest)
-    loss = sklearn.metrics.brier_score_loss(yTrain, yTest)
-    figNB, (ax0, ax1) = plt.subplots(ncols=2, figsize=(8, 2))
-    ax0.plot(loss)
-    ax0.set_title("%s: Coût", classifier)
-    ax1.plot(accuracy)
-    ax1.set_title("%s: Taux d'erreur", classifier)
-    plt.figure()
-    plt.show(figNB)
+    t = sklearn.metrics.accuracy_score(
+        yTrain, yTest)
+    print(classifier + ": " + str(np.round(t, 5)))
+
+    # plt.figure()
+    # plt.show(figNB)
 
 
 def custom(text):
@@ -105,40 +102,88 @@ X_train, X_test, y_train, y_test = train_test_split(
     output_corpus, na, test_size=0.5, random_state=0)
 
 # Naive Bayes
-bayesNaif = MultinomialNB()
-y_pred = bayesNaif.fit(X_train, y_train).predict(X_test)
-print("Dumb Bayes Number of mislabeled points out of a total %d points : %d" %
-      (len(X_test), (y_test != y_pred).sum()))
-graph("Bayes Naif", y_train, y_pred)
+if False:
+    bayesNaif = MultinomialNB()
+    y_pred = bayesNaif.fit(X_train, y_train).predict(X_test)
+    print("Dumb Bayes Number of mislabeled points out of a total %d points : %d" %
+          (len(X_test), (y_test != y_pred).sum()))
+    graph("Bayes Naif", y_test, y_pred)
 
 # Arbre seul
-arbreDesc = tree.DecisionTreeClassifier()
-arbreDesc = arbreDesc.fit(output_corpus, na)
-y_pred = arbreDesc.predict(X_test)
-print("TREE Number of mislabeled points out of a total %d points : %d" %
-      (len(X_test), (y_test != y_pred).sum()))
-graph("Arbre de décision", y_train, y_pred)
-
+if True:
+    dd = []
+    t = [1, 2, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+    for x in t:
+        avg = []
+        for _ in range(5):
+            X_train, X_test, y_train, y_test = train_test_split(
+                output_corpus, na, test_size=0.5, random_state=0)
+            arbreDesc = tree.DecisionTreeClassifier(max_depth=x)
+            arbreDesc = arbreDesc.fit(X_train, y_train)
+            y_pred = arbreDesc.predict(X_test)
+            t2 = sklearn.metrics.accuracy_score(
+                y_test, y_pred)
+            avg.append(t2)
+        dd.append(sum(avg)/len(avg))
+    plt.plot(t, dd)
+    plt.ylabel("Précision")
+    plt.xlabel("Estimateurs")
+    plt.title("Arbre seul")
+    plt.show()
 # Forêt aléatoire
-foretAl = RandomForestClassifier(n_estimators=150)
-foretAl = foretAl.fit(output_corpus, na)
-y_pred = foretAl.predict(X_test)
-print("Forest Number of mislabeled points out of a total %d points : %d" %
-      (len(X_test), (y_test != y_pred).sum()))
-graph("Forêt aléatoire", y_train, y_pred)
+
+if False:
+    dd = []
+    t = [5, 25, 50, 75, 100, 125,
+         150, 175, 200, 225, 275, 300, 400, 500, 600, 700, 800, 900, 1000]
+    for x in t:
+        avg = []
+        for _ in range(5):
+            X_train, X_test, y_train, y_test = train_test_split(
+                output_corpus, na, test_size=0.5, random_state=0)
+            foretAl = RandomForestClassifier(n_estimators=x)
+            foretAl = foretAl.fit(X_train, y_train)
+            y_pred = foretAl.predict(X_test)
+            t2 = sklearn.metrics.accuracy_score(
+                y_test, y_pred)
+            avg.append(t2)
+        dd.append(sum(avg)/len(avg))
+    plt.plot(t, dd)
+    plt.ylabel("Précision")
+    plt.xlabel("Estimateurs")
+    plt.title("Forêt aléatoire")
+    plt.show()
+
 
 # SVM
-supportVectMach = svm.SVC()
-supportVectMach = supportVectMach.fit(output_corpus, na)
-y_pred = supportVectMach.predict(X_test)
-print("SVM Number of mislabeled points out of a total %d points : %d" %
-      (len(X_test), (y_test != y_pred).sum()))
-graph("SVM", y_train, y_pred)
+if False:
+    supportVectMach = svm.SVC()
+    supportVectMach = supportVectMach.fit(X_train, y_train)
+    y_pred = supportVectMach.predict(X_test)
+    print("SVM Number of mislabeled points out of a total %d points : %d" %
+          (len(X_test), (y_test != y_pred).sum()))
+    graph("SVM", y_test, y_pred)
 
 # MLP
-percMultCouche = MLPClassifier(hidden_layer_sizes=(64, 64), random_state=0)
-percMultCouche = percMultCouche.fit(output_corpus, na)
-y_pred = percMultCouche.predict(X_test)
-print("MLP Number of mislabeled points out of a total %d points : %d" %
-      (len(X_test), (y_test != y_pred).sum()))
-graph("Perceptron Multi-Couche", y_train, y_pred)
+if False:
+    dd = []
+    t = [50, 64, 100, 200, 300, 400, 500]
+
+    for x in t:
+        avg = []
+        for _ in range(5):
+            X_train, X_test, y_train, y_test = train_test_split(
+                output_corpus, na, test_size=0.5, random_state=0)
+            percMultCouche = MLPClassifier(
+                hidden_layer_sizes=(x, x), random_state=0)
+            percMultCouche = percMultCouche.fit(X_train, y_train)
+            y_pred = percMultCouche.predict(X_test)
+            t2 = sklearn.metrics.accuracy_score(
+                y_test, y_pred)
+            avg.append(t2)
+        dd.append(sum(avg)/len(avg))
+    plt.plot(t, dd)
+    plt.ylabel("Précision")
+    plt.xlabel("Dimension")
+    plt.title("MPL")
+    plt.show()
